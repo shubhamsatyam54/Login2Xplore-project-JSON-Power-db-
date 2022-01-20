@@ -1,102 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="../style1.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <head>
+        <title>Fetch a record</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
 
-</head>
+    </head>
 
-<body>
-    
-
-    <h1 id="header" style="font-size: 15px;">Retrieve a record</h1>
-
-    <div class="container">
-        <form id="empForm" method="post">
-            <input type="text" id="empName" name="empName"
-                placeholder="Enter the name of the employee whose record is to be fetched" class="form-control">
-            <p></p>
-            <input type="button" class="btn btn-primary" value="Fetch Record" onclick="getEmployee();">
-
-        </form>
-    </div>
+    <body>
 
 
-    <script>
-        function validateAndGetFormData() {
-            var empNameVar = $("#empName").val();
-            if (empNameVar === "") {
-                alert("Employee Name is a required value!");
-                $("#empName").focus();
-                return "";
+        <div align="center">
+            <h1 id="header">Fetch a record</h1>
+            <form id="studForm" method="post">
+                <input type="text" id="studName" name="studName"
+                       placeholder="Enter the name of the student whose record is to be fetched" class="form-control">
+                <p></p>
+                <input type="button" class="btn btn-primary" value="Fetch Record" onclick="getStudent();">
+
+            </form>
+            <br>
+            <a href="index.html">Home</a>
+        </div>
+
+
+        <script>
+            function validateAndGetFormData() {
+                var studNameVar = $("#studName").val();
+                if (studNameVar === "") {
+                    alert("Student Name is a required value!");
+                    $("#studName").focus();
+                    return "";
+                }
+                var jsonStrObj = {
+                    studName: studNameVar,
+                };
+                return JSON.stringify(jsonStrObj);
             }
-            var jsonStrObj = {
-                empName: empNameVar,
-            };
-            return JSON.stringify(jsonStrObj);
-        }
 
-        function resetForm() {
-            $("#empName").val("");
-            $("#empName").focus();
-        }
-
-        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
-            var url = dbBaseUrl + apiEndPointUrl;
-            var jsonObj;
-            $.post(url, reqString, function (result) {
-                jsonObj = JSON.parse(result);
-            }).fail(function (result) {
-                var dataJsonObj = result.responseText;
-                jsonObj = JSON.parse(dataJsonObj);
-            });
-            return jsonObj;
-        }
-
-        function createGETRequest(token, dbname, relationName, jsonObjStr) {
-            var value1 = "{\n"
-                + "\"token\" : \""
-                + token
-                + "\",\n" + "\"cmd\" : \"GET\",\n"
-                + "\"dbName\": \""
-                + dbname
-                + "\",\n"
-                + "\"rel\" : \""
-                + relationName
-                + "\",\n"
-                + "\"jsonStr\":\n"
-                + jsonObjStr
-                + "\n"
-                + "}";
-            return value1;
-        }
-
-        function getEmployee() {
-            var jsonStr = validateAndGetFormData();
-            if (jsonStr === "") {
-                return;
+            function resetForm() {
+                $("#studName").val("");
+                $("#studName").focus();
             }
-            var getReqStr = createGETRequest("90935456|-31948798142885023|90931464",
-                "Employee", "Emp-rel", jsonStr);
-            alert(getReqStr);
-            jQuery.ajaxSetup({ async: false });
-            var resultObj = executeCommand(getReqStr,
-                "http://api.login2explore.com:5577", "/api/irl");
-            alert(JSON.stringify(resultObj));
-            jQuery.ajaxSetup({ async: true });
-            resetForm();
-        }        
-    </script>
 
-    <button id="footer" onclick="location.href='../index.html'">Home</button>
 
-</body>
+
+            function getStudent() {
+                var jsonStr = validateAndGetFormData();
+                if (jsonStr === "") {
+                    return;
+                }
+                var getReqStr = createGETRequest("90938470|-31948830671527185|90947219", "Student", "Det", jsonStr);
+                        alert(getReqStr);
+                jQuery.ajaxSetup({async: false});
+                var resultObj = executeCommandAtGivenBaseUrl(getReqStr, "http://api.login2explore.com:5577", "/api/irl");
+                alert(JSON.stringify(resultObj));
+                jQuery.ajaxSetup({async: true});
+                resetForm();
+            }
+        </script>
+
+    </body>
 
 </html>
