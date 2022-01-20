@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="en">
+    <head>
+        <title>Create a record</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Vertical (basic) form</h2>
+            <form id="studForm" method="post">
+                <div class="form-group">
+                    <span><label for="roll">Roll No:</label> <label id="rollMsg">
+                        </label></span>
+                    <input type="text" class="form-control" name="roll" id="roll"
+                           placeholder="Enter Roll No" required>
+                </div>
+                <div class="form-group">
+                    <label for="studName">Student Name:</label>
+                    <input type="text" class="form-control" id="studName"
+                           placeholder="Enter Employee Name" name="studName">
+                </div>
+                <div class="form-group">
+                    <label for="studEmail">Email:</label>
+                    <input type="email" class="form-control" id="studEmail"
+                           placeholder="Enter Employee Email" name="studEmail">
+                </div>
+                <input type="button" class="btn btn-primary" id="empSave" value="Save"
+                       onclick="saveStudent();">
+            </form>
+        </div>
+        <script>
+            $("#roll").focus();
+            function validateAndGetFormData() {
+                var rollVar = $("#roll").val();
+                if (rollVar === "") {
+                    alert("Roll No Required Value");
+                    $("#roll").focus();
+                    return "";
+                }
+                var studNameVar = $("#studName").val();
+                if (studNameVar === "") {
+                    alert("Employee Name is Required Value");
+                    $("#studName").focus();
+                    return "";
+                }
+                var studEmailVar = $("#studEmail").val();
+                if (studEmailVar === "") {
+                    alert("Employee Email is Required Value");
+                    $("#studEmail").focus();
+                    return "";
+                }
+                var jsonStrObj = {
+                    roll: rollVar,
+                    studName: studNameVar,
+                    studEmail: studEmailVar,
+                };
+                return JSON.stringify(jsonStrObj);
+            }
+        // This method is used to create PUT Json request.
+           
+            function resetForm() {
+                $("#roll").val("")
+                $("#studName").val("");
+                $("#studEmail").val("");
+                $("#roll").focus();
+            }
+            function saveStudent() {
+                var jsonStr = validateAndGetFormData();
+                if (jsonStr === "") {
+                    return;
+                }
+                var putReqStr = createPUTRequest("90938470|-31948830671527185|90947219",jsonStr, "Student", "Det");
+                alert(putReqStr);
+                jQuery.ajaxSetup({async: false});
+                var resultObj = executeCommandAtGivenBaseUrl(putReqStr,"http://api.login2explore.com:5577", "/api/iml");
+                alert(JSON.stringify(resultObj));
+                jQuery.ajaxSetup({async: true});
+                resetForm();
+            }
+        </script>
+    </body>
+</html>
